@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大学生今日运势生成器</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Microsoft YaHei",sans-serif;
+    min-height:100vh;
+    padding:30px;
+    background:linear-gradient(
+    -45deg,
+    #4facfe,
+    #00f2fe,
+    #7b68ee,
+    #43e97b
+    );
+
+    background-size:400% 400%;
+
+    animation:bgMove 12s ease infinite;
+}
+
+@keyframes bgMove{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.title{
+    text-align:center;
+    color:white;
+    font-size:42px;
+    margin-bottom:30px;
+
+    text-shadow:
+    0 4px 10px rgba(0,0,0,.2);
+}
+
+.top{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+input{
+
+    width:260px;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+}
+
+button{
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#4CAF50;
+
+    color:white;
+
+    cursor:pointer;
+
+    margin-left:10px;
+
+    font-size:16px;
+
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+    transform:none;
+}
+
+.card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+    0 6px 18px rgba(0,0,0,.15);
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    transition:.8s;
+}
+
+.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+}
+
+.score{
+
+    font-size:72px;
+
+    font-weight:bold;
+
+    color:#2196f3;
+}
+
+.level{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin-top:10px;
+}
+
+.big{
+    color:#2ecc71;
+}
+
+.good{
+    color:#3498db;
+}
+
+.normal{
+    color:#f39c12;
+}
+
+.star{
+
+    color:orange;
+
+    font-size:28px;
+}
+
+h2{
+
+    margin-bottom:15px;
+
+    color:#333;
+}
+
+p{
+
+    line-height:1.8;
+}
+
+ul{
+
+    padding-left:20px;
+}
+
+li{
+
+    margin:8px 0;
+}
+
+.highlight{
+
+    font-size:18px;
+
+    color:#444;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">
+        🎓 大学生今日运势生成器
+    </h1>
+
+    <div class="top">
+
+        <input
+        type="text"
+        id="name"
+        placeholder="请输入姓名">
+
+        <button
+        id="generateBtn"
+        onclick="generateFortune()">
+
+            生成今日运势
+
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+let generated = false;
+
+const keywords = [
+"坚持","成长","行动","专注","突破",
+"机遇","耐心","探索","勇气","自律"
+];
+
+const advices = [
+"完成一项拖延已久的事情",
+"整理近期学习计划",
+"适当进行运动",
+"保持规律作息",
+"主动与朋友交流",
+"减少无意义刷手机时间",
+"专注做好当前任务",
+"尝试学习新的知识"
+];
+
+const signs = [
+"种一棵树最好的时间是十年前，其次是现在。",
+"保持热爱，奔赴下一场山海。",
+"机会往往隐藏在平凡的日常里。",
+"坚持会让事情逐渐向好的方向发展。",
+"相信自己，你比想象中更优秀。"
+];
+
+const quotes = [
+"行动是改变现状的第一步。",
+"成长来自持续不断的积累。",
+"不要因为走得慢而焦虑。",
+"今天的努力会成为明天的底气。",
+"坚持下去，总会看到成果。"
+];
+
+function random(arr){
+
+    return arr[
+        Math.floor(
+            Math.random()*arr.length
+        )
+    ];
+}
+
+function stars(num){
+
+    return "★".repeat(num)
+        + "☆".repeat(5-num);
+}
+
+function generateFortune(){
+
+    if(generated){
+        return;
+    }
+
+    const name =
+    document.getElementById("name")
+    .value.trim();
+
+    if(name===""){
+
+        alert("请输入姓名");
+
+        return;
+    }
+
+    generated = true;
+
+    document
+    .getElementById("generateBtn")
+    .disabled = true;
+
+    let score =
+    Math.floor(Math.random()*41)+60;
+
+    let level = "";
+    let levelClass = "";
+    let analysis = "";
+
+    if(score>=90){
+
+        level="大吉";
+        levelClass="big";
+
+        analysis=
+        "今天整体状态优秀，适合推进重要计划，行动力和专注度都较强，可以大胆尝试新的目标。";
+
+    }
+    else if(score>=75){
+
+        level="吉";
+        levelClass="good";
+
+        analysis=
+        "今天状态良好，按照计划稳步推进即可，坚持会带来不错的收获。";
+
+    }
+    else{
+
+        level="平";
+        levelClass="normal";
+
+        analysis=
+        "今天整体较为平稳，建议合理安排时间，保持耐心，不必急于求成。";
+    }
+
+    document
+    .getElementById("result")
+    .innerHTML = `
+
+    <div class="card">
+
+        <h2>${name} 的今日运势</h2>
+
+        <div
+        id="score"
+        class="score">
+            0
+        </div>
+
+        <div
+        class="level ${levelClass}">
+
+            运势等级：${level}
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>运势指数</h2>
+
+        <p>
+        学习运：
+        <span class="star">
+        ${stars(Math.floor(Math.random()*5)+1)}
+        </span>
+        </p>
+
+        <p>
+        社交运：
+        <span class="star">
+        ${stars(Math.floor(Math.random()*5)+1)}
+        </span>
+        </p>
+
+        <p>
+        财运：
+        <span class="star">
+        ${stars(Math.floor(Math.random()*5)+1)}
+        </span>
+        </p>
+
+        <p>
+        健康运：
+        <span class="star">
+        ${stars(Math.floor(Math.random()*5)+1)}
+        </span>
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>今日关键词</h2>
+
+        <p class="highlight">
+
+        ${random(keywords)} ·
+        ${random(keywords)} ·
+        ${random(keywords)}
+
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>今日建议</h2>
+
+        <ul>
+
+            <li>${random(advices)}</li>
+
+            <li>${random(advices)}</li>
+
+            <li>${random(advices)}</li>
+
+        </ul>
+
+    </div>
+
+    <div class="card">
+
+        <h2>幸运签</h2>
+
+        <p>${random(signs)}</p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>每日一句</h2>
+
+        <p>${random(quotes)}</p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>运势解析</h2>
+
+        <p>${analysis}</p>
+
+    </div>
+    `;
+
+    const cards =
+    document.querySelectorAll(".card");
+
+    cards.forEach((card,index)=>{
+
+        setTimeout(()=>{
+
+            card.classList.add("show");
+
+        },index*250);
+
+    });
+
+    let current = 0;
+
+    const timer =
+    setInterval(()=>{
+
+        document
+        .getElementById("score")
+        .innerText = current;
+
+        current++;
+
+        if(current > score){
+
+            clearInterval(timer);
+        }
+
+    },15);
+}
+
+</script>
+
+</body>
+</html>
